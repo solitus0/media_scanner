@@ -16,7 +16,6 @@ class DirectoryScanner:
         self._excluded_dirs = self.get_excluded_dirs()
 
     def get_scan_paths(self) -> List[str]:
-        print(APP_MEDIA_SCAN_DIRS)
         return APP_MEDIA_SCAN_DIRS
 
     def get_excluded_dirs(self) -> List[str]:

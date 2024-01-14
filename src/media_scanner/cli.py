@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import click
 from media_scanner.scanner.file_system import DirectoryScanner
 from media_scanner.scanner.ffmpeg_wrapper import FfmpegWrapper
