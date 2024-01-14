@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+sqlalchemy = "*"
+ffmpeg-python = "*"
+sse-starlette = "*"
+click = "*"
+media-scanner = {editable = true, path = "."}
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
