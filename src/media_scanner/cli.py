@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import click
-from media_scanner.scanner.file_system import DirectoryScanner
+from media_scanner.scanner.file_system import DirectoryScanner, FileManager
 from media_scanner.scanner.ffmpeg_wrapper import FfmpegWrapper
 from media_scanner.scanner import repository
 from media_scanner.database import get_db
 from media_scanner.scanner.schemas import MediaQuery
+from click.termui import progressbar
 import logging
 
 
@@ -16,23 +17,31 @@ def scan(soft: bool):
     scanner = DirectoryScanner()
     media_files = scanner.scan_for_media_files()
 
-    for media_file in media_files:
-        media_entity = repository.get_by_file_path(db, media_file)
-        if media_entity and soft:
+    with progressbar(media_files, label="Scanning Media Files:") as bar:
+        for media_file in bar:
+            media_entity = repository.get_by_file_path(db, media_file)
+            if media_entity and soft:
+                continue
+
+            try:
+                ffmpeg_wrapper = FfmpegWrapper(media_file)
+                data = ffmpeg_wrapper.data
+
+                if media_entity:
+                    if repository.should_update(data, media_entity):
+                        repository.update_media(db, media_entity, data)
+                else:
+                    logging.info(f"Creating new media: {data.file_path}")
+                    repository.create_media(db, data)
+            except Exception as e:
+                logging.error(f"Error processing media file: {e}")
+
+    all_media = repository.all(db)
+    for media in all_media:
+        if FileManager().file_exist(media.file_path):
             continue
 
-        try:
-            ffmpeg_wrapper = FfmpegWrapper(media_file)
-            data = ffmpeg_wrapper.data
-
-            if media_entity:
-                if repository.should_update(data, media_entity):
-                    repository.update_media(db, media_entity, data)
-            else:
-                logging.info(f"Creating new media: {data.file_path}")
-                repository.create_media(db, data)
-        except Exception as e:
-            logging.error(f"Error processing media file: {e}")
+        repository.delete(db, media)
 
     db.close()
 

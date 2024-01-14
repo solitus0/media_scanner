@@ -96,3 +96,8 @@ def should_update(model: BaseModel, database_model):
     }
 
     return schema_values != model_values
+
+
+def delete(db: Session, media: Media):
+    db.delete(media)
+    db.commit()
