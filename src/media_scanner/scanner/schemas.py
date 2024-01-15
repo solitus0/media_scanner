@@ -95,9 +95,12 @@ class MediaQuery(BaseModel):
     order_direction: OrderDirectionEnum = Field(
         default="desc", description="Options: asc, desc"
     )
-    audio_codec: Optional[str] = None
     video_codec: Optional[str] = None
+    not_video_codec: Optional[str] = None
+    audio_codec: Optional[str] = None
+    not_audio_codec: Optional[str] = None
     subtitle_codec: Optional[str] = None
+    not_subtitle_codec: Optional[str] = None
     min_size: Optional[int] = None
 
 

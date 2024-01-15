@@ -17,6 +17,7 @@ def scan(soft: bool):
     scanner = DirectoryScanner()
     media_files = scanner.scan_for_media_files()
 
+    click.echo(f"Scan paths {scanner.get_scan_paths()}")
     with progressbar(media_files, label="Scanning Media Files:") as bar:
         for media_file in bar:
             media_entity = repository.get_by_file_path(db, media_file)
@@ -48,23 +49,32 @@ def scan(soft: bool):
 
 @click.command()
 @click.option("--video_codec", type=str)
+@click.option("--not_video_codec", type=str)
 @click.option("--audio_codec", type=str)
-@click.option("--sub_codec", type=str)
+@click.option("--not_audio_codec", type=str)
+@click.option("--subtitle_codec", type=str)
+@click.option("--not_subtitle_codec", type=str)
 @click.option("--batch_size", type=int, default=10, help="Batch size")
 @click.option("--page", type=int, default=1, help="Page")
 @click.option("--min_size", type=int, default=None, help="Min size in MB")
 def get(
     video_codec: str,
+    not_video_codec: str,
     audio_codec: str,
-    sub_codec: str,
+    not_audio_codec: str,
+    subtitle_codec: str,
+    not_subtitle_codec: str,
     batch_size: int,
     page: int,
     min_size: int,
 ):
     query = MediaQuery.model_construct(
         video_codec=video_codec,
+        not_video_codec=not_video_codec,
         audio_codec=audio_codec,
-        subtitle_codec=sub_codec,
+        not_audio_codec=not_audio_codec,
+        subtitle_codec=subtitle_codec,
+        not_subtitle_codec=not_subtitle_codec,
         batch_size=batch_size,
         page=page,
         min_size=min_size,

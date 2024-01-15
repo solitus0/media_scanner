@@ -46,15 +46,12 @@ class FfmpegWrapper:
 
         has_video = len(video_streams) > 0
         has_audio = len(audio_streams) > 0
-        has_subs = len(subs_streams) > 0
+
         if not has_video:
             raise Exception(f"No video stream found in {self._source_path}")
 
         if not has_audio:
             raise Exception(f"No audio stream found in {self._source_path}")
-
-        if not has_subs:
-            logging.warning(f"No subtitle stream found in {self._source_path}")
 
         video_codec = [stream.codec_name for stream in video_streams]
         audio_codec = [stream.codec_name for stream in audio_streams]

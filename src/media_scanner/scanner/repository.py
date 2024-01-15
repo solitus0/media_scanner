@@ -30,11 +30,20 @@ def get_by_filter(db: Session, filter: schemas.MediaQuery) -> list[Media]:
     if filter.video_codec:
         query = query.filter(Media.video_codec.contains(filter.video_codec))
 
+    if filter.not_video_codec:
+        query = query.filter(~Media.video_codec.contains(filter.not_video_codec))
+
     if filter.audio_codec:
         query = query.filter(Media.audio_codec.contains(filter.audio_codec))
 
+    if filter.not_audio_codec:
+        query = query.filter(~Media.audio_codec.contains(filter.not_audio_codec))
+
     if filter.subtitle_codec:
         query = query.filter(Media.subtitle_codec.contains(filter.subtitle_codec))
+
+    if filter.not_subtitle_codec:
+        query = query.filter(~Media.subtitle_codec.contains(filter.not_subtitle_codec))
 
     if filter.min_size:
         query = query.filter(Media.file_size >= filter.min_size)
