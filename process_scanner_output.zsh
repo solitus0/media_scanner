@@ -19,7 +19,7 @@ while IFS= read -r file; do
     echo "Moving original file to /originals/${filename}"
     mv "$file" "/originals/${filename}"
 
-    echo "Moving encoded file /encodes/${filename} to original file location"
+    echo "Moving encoded file /encodes/${filename} to original file location ${file}"
     mv "/encodes/${filename}" "$file"
 done
 
