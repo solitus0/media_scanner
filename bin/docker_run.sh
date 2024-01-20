@@ -2,4 +2,4 @@
 
 export PIPENV_PIPFILE=/var/cli/Pipfile
 
-pipenv run python /var/cli/src/media_scanner/cli.py "$@"
+PIPENV_DONT_LOAD_ENV=1 pipenv run python /var/cli/src/media_scanner/cli.py "$@"

@@ -89,11 +89,11 @@ class MediaQuery(BaseModel):
     page: int = 1
     batch_size: int = 50
     order_by: OrderByEnum = Field(
-        default=OrderByEnum.created_at,
+        default=OrderByEnum.file_size,
         description=f"Options: {', '.join([item.value for item in OrderByEnum])}",
     )
     order_direction: OrderDirectionEnum = Field(
-        default="desc", description="Options: asc, desc"
+        default="asc", description="Options: asc, desc"
     )
     video_codec: Optional[str] = None
     not_video_codec: Optional[str] = None
@@ -102,6 +102,7 @@ class MediaQuery(BaseModel):
     subtitle_codec: Optional[str] = None
     not_subtitle_codec: Optional[str] = None
     min_size: Optional[int] = None
+    query: Optional[str] = None
 
 
 class ScanCommand(BaseModel):

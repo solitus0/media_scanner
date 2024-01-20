@@ -15,9 +15,10 @@ import logging
 def scan(soft: bool):
     db = get_db()
     scanner = DirectoryScanner()
+    click.echo(f"Scanning for media files in {scanner.get_scan_paths()}")
     media_files = scanner.scan_for_media_files()
+    click.echo(f"Found {len(media_files)} media files.")
 
-    click.echo(f"Scan paths {scanner.get_scan_paths()}")
     with progressbar(media_files, label="Scanning Media Files:") as bar:
         for media_file in bar:
             media_entity = repository.get_by_file_path(db, media_file)
@@ -57,6 +58,7 @@ def scan(soft: bool):
 @click.option("--batch_size", type=int, default=10, help="Batch size")
 @click.option("--page", type=int, default=1, help="Page")
 @click.option("--min_size", type=int, default=None, help="Min size in MB")
+@click.option("--query", type=str, default=None, help="Query")
 def get(
     video_codec: str,
     not_video_codec: str,
@@ -67,6 +69,7 @@ def get(
     batch_size: int,
     page: int,
     min_size: int,
+    query: str,
 ):
     query = MediaQuery.model_construct(
         video_codec=video_codec,
@@ -78,6 +81,7 @@ def get(
         batch_size=batch_size,
         page=page,
         min_size=min_size,
+        query=query,
     )
 
     db = get_db()

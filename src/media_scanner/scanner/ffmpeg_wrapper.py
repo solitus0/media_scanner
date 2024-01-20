@@ -46,12 +46,16 @@ class FfmpegWrapper:
 
         has_video = len(video_streams) > 0
         has_audio = len(audio_streams) > 0
+        has_subs = len(subs_streams) > 0
 
         if not has_video:
             raise Exception(f"No video stream found in {self._source_path}")
 
         if not has_audio:
-            raise Exception(f"No audio stream found in {self._source_path}")
+            logging.warning(f"No audio stream found in {self._source_path}")
+
+        if not has_subs:
+            logging.warning(f"No subtitle stream found in {self._source_path}")
 
         video_codec = [stream.codec_name for stream in video_streams]
         audio_codec = [stream.codec_name for stream in audio_streams]
@@ -61,7 +65,7 @@ class FfmpegWrapper:
         height = int(video_streams[0].height)
         dimesions = f"{width}x{height}"
         file_size = self.get_file_size(self._source_path)
-        file_name = os.path.splitext(os.path.basename(self._source_path))[0]
+        file_name = os.path.basename(self._source_path)
         duration = float(data.format.duration) if data.format.duration else None
 
         uuid_string = data.get_tag("MEDIA_UUID")

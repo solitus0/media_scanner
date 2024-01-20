@@ -48,6 +48,9 @@ def get_by_filter(db: Session, filter: schemas.MediaQuery) -> list[Media]:
     if filter.min_size:
         query = query.filter(Media.file_size >= filter.min_size)
 
+    if filter.query:
+        query = query.filter(Media.file_name.contains(filter.query))
+
     order_by = getattr(Media, filter.order_by)
     order_direction = getattr(order_by, filter.order_direction)
 
@@ -76,7 +79,9 @@ def create_media(db: Session, data: schemas.MediaCreate) -> Media:
 def update_media(db: Session, media: Media, data: schemas.MediaCreate) -> Media:
     for key, value in data.model_dump().items():
         if getattr(media, key) != value:
-            logging.info(f"Updating {key} from {getattr(media, key)} to {value}")
+            if key == "uuid":
+                continue
+
             setattr(media, key, value)
 
     db.commit()
