@@ -8,6 +8,7 @@ from media_scanner.database import get_db
 from media_scanner.scanner.schemas import MediaQuery
 from click.termui import progressbar
 import logging
+import json
 
 
 @click.command()
@@ -59,6 +60,7 @@ def scan(soft: bool):
 @click.option("--page", type=int, default=1, help="Page")
 @click.option("--min_size", type=int, default=None, help="Min size in MB")
 @click.option("--query", type=str, default=None, help="Query")
+@click.option("--no_default_sub", type=bool, default=None, help="Query")
 def get(
     video_codec: str,
     not_video_codec: str,
@@ -70,6 +72,7 @@ def get(
     page: int,
     min_size: int,
     query: str,
+    no_default_sub: bool,
 ):
     query = MediaQuery.model_construct(
         video_codec=video_codec,
@@ -82,15 +85,15 @@ def get(
         page=page,
         min_size=min_size,
         query=query,
+        no_default_sub=no_default_sub,
     )
 
     db = get_db()
     result = repository.get_by_filter(db, query)
 
-    for item in result:
-        click.echo(item.file_path)
-
     db.close()
+    paths = [media.file_path for media in result]
+    click.echo(json.dumps(paths))
 
 
 @click.group()

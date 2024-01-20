@@ -47,6 +47,11 @@ class FfmpegWrapper:
         has_video = len(video_streams) > 0
         has_audio = len(audio_streams) > 0
         has_subs = len(subs_streams) > 0
+        has_default_subs = False
+        if has_subs:
+            has_default_subs = any(
+                [stream.disposition.default for stream in subs_streams]
+            )
 
         if not has_video:
             raise Exception(f"No video stream found in {self._source_path}")
@@ -82,6 +87,7 @@ class FfmpegWrapper:
             audio_codec=audio_codec,
             subtitle_codec=subs_codec,
             duration=duration,
+            has_default_subtitle=has_default_subs,
         )
 
         return media

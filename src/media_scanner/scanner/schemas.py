@@ -103,6 +103,7 @@ class MediaQuery(BaseModel):
     not_subtitle_codec: Optional[str] = None
     min_size: Optional[int] = None
     query: Optional[str] = None
+    no_default_sub: Optional[bool] = None
 
 
 class ScanCommand(BaseModel):
@@ -234,3 +235,4 @@ class Result(BaseModel):
     subtitle_codec: Optional[list] = None
     duration: Optional[float] = None
     uuid: str
+    has_default_subtitle: Optional[bool] = None

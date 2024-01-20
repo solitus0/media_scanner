@@ -1,8 +1,7 @@
 import datetime
 from dataclasses import dataclass
-from typing import ClassVar, Optional
 
-from sqlalchemy import JSON, Column, DateTime, Float, Integer, String
+from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, Boolean
 
 from media_scanner.database import Base, engine
 
@@ -21,12 +20,11 @@ class Media(Base):
     subtitle_codec = Column(JSON, nullable=True)
     duration = Column(Float, nullable=True)
     dimensions = Column(String, nullable=True)
+    has_default_subtitle = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(
         DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
     )
-
-    permissions: ClassVar[Optional[dict]] = {}
 
 
 Base.metadata.create_all(engine)

@@ -51,6 +51,9 @@ def get_by_filter(db: Session, filter: schemas.MediaQuery) -> list[Media]:
     if filter.query:
         query = query.filter(Media.file_name.contains(filter.query))
 
+    if filter.no_default_sub:
+        query = query.filter(Media.has_default_subtitle == False)
+
     order_by = getattr(Media, filter.order_by)
     order_direction = getattr(order_by, filter.order_direction)
 

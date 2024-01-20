@@ -1,6 +1,9 @@
 FROM python:3.10-slim
 
 ENV APP_MEDIA_SCAN_DIRS=/media
+ENV ENCODES_TEMP_DIR=/encodes
+ENV ORIGINALS_DIR=/originals
+ENV PRESETS_DIR=/presets
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip3 install --upgrade pip setuptools && \
@@ -11,10 +14,10 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     handbrake-cli \
     zsh \
-    make
+    make \
+    jq
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN mkdir /encodes && mkdir /originals && mkdir /media
 
 WORKDIR /var/cli
 
@@ -24,10 +27,14 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pipenv install .
 
 COPY bin/docker_run.sh /usr/local/bin/scanner
+COPY bin/process_scanner_output.zsh /usr/local/bin/process_scanner_output
+
 RUN chmod +x /usr/local/bin/scanner
+RUN chmod +x /usr/local/bin/process_scanner_output
 
 VOLUME [ "/media" ]
 VOLUME [ "/originals" ]
 VOLUME [ "/encodes" ]
+VOLUME [ "/presets" ]
 
 CMD ["python3"]
