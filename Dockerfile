@@ -6,7 +6,7 @@ ENV ORIGINALS_DIR=/originals
 ENV PRESETS_DIR=/presets
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip3 install --upgrade pip setuptools && \
+    pip3 install --upgrade pip setuptools supervisor && \
     pip3 install --ignore-installed distlib pipenv
 
 RUN apt-get update && apt-get install -y \
@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     handbrake-cli \
     zsh \
     make \
+    procps \
+    inotify-tools \
     jq
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -26,7 +28,8 @@ COPY . /var/cli
 RUN --mount=type=cache,target=/root/.cache/pip \
     pipenv install .
 
-COPY bin/docker_run.sh /usr/local/bin/scanner
+COPY supervisord.conf /etc/supervisord.conf
+COPY bin/cli.sh /usr/local/bin/scanner
 COPY bin/process_scanner_output.zsh /usr/local/bin/process_scanner_output
 
 RUN chmod +x /usr/local/bin/scanner
@@ -37,4 +40,6 @@ VOLUME [ "/originals" ]
 VOLUME [ "/encodes" ]
 VOLUME [ "/presets" ]
 
-CMD ["python3"]
+ENTRYPOINT ["/bin/zsh", "-c"]
+
+CMD ["supervisord", ,"-n", "-c", "/etc/supervisord.conf"]

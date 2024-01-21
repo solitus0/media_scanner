@@ -14,7 +14,7 @@ fi
 json_array=$@
 
 # Convert JSON array to newline-separated paths
-IFS=$'\n' file_paths=($(echo $json_array | jq -r '.[]'))
+IFS=$'\n' file_paths=($(echo $json_array | jq -r '.paths[]'))
 
 for file in "${file_paths[@]}"; do
     echo "Processing file: $file"

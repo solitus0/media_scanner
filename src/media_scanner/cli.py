@@ -12,11 +12,14 @@ import json
 
 
 @click.command()
-@click.option("--soft", default=False, help="Soft scan, adds only new files.")
+@click.option("--soft", is_flag=True, help="Soft scan, adds only new files.")
 def scan(soft: bool):
     db = get_db()
     scanner = DirectoryScanner()
-    click.echo(f"Scanning for media files in {scanner.get_scan_paths()}")
+    click.echo(
+        f"Scanning for media files in {scanner.get_scan_paths()} {'with soft flag' if soft else ''}"
+    )
+
     media_files = scanner.scan_for_media_files()
     click.echo(f"Found {len(media_files)} media files.")
 
@@ -60,7 +63,7 @@ def scan(soft: bool):
 @click.option("--page", type=int, default=1, help="Page")
 @click.option("--min_size", type=int, default=None, help="Min size in MB")
 @click.option("--query", type=str, default=None, help="Query")
-@click.option("--no_default_sub", type=bool, default=None, help="Query")
+@click.option("--no_default_sub", is_flag=True, help="No default sub")
 def get(
     video_codec: str,
     not_video_codec: str,
@@ -93,7 +96,8 @@ def get(
 
     db.close()
     paths = [media.file_path for media in result]
-    click.echo(json.dumps(paths))
+    result = {"count": len(paths), "paths": paths}
+    click.echo(json.dumps(result))
 
 
 @click.group()

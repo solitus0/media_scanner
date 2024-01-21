@@ -23,7 +23,7 @@ docker_build:
 	docker build -t encoder .
 
 run:
-	docker run -it -v /Users/ernestas/Downloads/media:/media:rw -v ./var:/var/cli/var:rw -v ./presets:/presets:ro -v ./encodes:/encodes:rw encoder zsh
+	docker run -it -v /Users/ernestas/Downloads/media:/media:rw -v ./var:/var/cli/var:rw -v ./presets:/presets:ro -v ./encodes:/encodes:rw --name encoder encoder zsh -c "bin/media_scanner.sh"
 
 test2:
 	process_scanner_output $(scanner get --not_video_codec="hevc" --not_audio_codec="opus")
